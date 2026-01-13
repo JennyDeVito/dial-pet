@@ -1,3 +1,8 @@
+/*
+ * replace the content of this file in the main.cpp to test the encoder reading
+ * and the button click to reset the count
+ */
+
 #include <M5Dial.h>
 
 void setup() {
