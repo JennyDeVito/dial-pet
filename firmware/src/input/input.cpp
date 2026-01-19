@@ -1,3 +1,4 @@
+#include "Input.h"
 #include <M5Dial.h>
 
 /* // EXP: encoder reading data type
@@ -6,16 +7,6 @@
  * be a 32-bit data type for sure - but, to avoid problems, stick to int32_t ;D
  */
 
-struct InputState {
-  int32_t dialPosition;
-  int32_t dialDelta;
-  bool buttonPressed;
-  bool buttonDoublePressed;
-  bool touching;
-  int16_t x;
-  int16_t y;
-};
-
 namespace Input {
 // module variables are static
 
@@ -23,7 +14,7 @@ static InputState state_;
 static int32_t encoderLastReading;
 
 void begin() {
-  state_ = {};
+  // state_ = {};
   encoderLastReading = M5Dial.Encoder.read();
   state_.dialPosition = encoderLastReading;
 }
@@ -36,6 +27,11 @@ void update() {
   state_.buttonDoublePressed = M5Dial.BtnA.wasDoubleClicked();
   auto touch = M5Dial.Touch.getDetail();
   state_.touching = (touch.state & m5::mask_touch) != 0;
+  // if (touch.state & m5::mask_touch) {
+  //   state_.touching = 1;
+  // } else {
+  //   state_.touching = 0;
+  // }
   state_.x = touch.x;
   state_.y = touch.y;
 }
