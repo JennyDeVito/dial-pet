@@ -14,7 +14,7 @@ static InputState state_;
 static int32_t encoderLastReading;
 
 void begin() {
-  // state_ = {};
+  state_ = {};
   encoderLastReading = M5Dial.Encoder.read();
   state_.dialPosition = encoderLastReading;
 }
@@ -27,11 +27,6 @@ void update() {
   state_.buttonDoublePressed = M5Dial.BtnA.wasDoubleClicked();
   auto touch = M5Dial.Touch.getDetail();
   state_.touching = (touch.state & m5::mask_touch) != 0;
-  // if (touch.state & m5::mask_touch) {
-  //   state_.touching = 1;
-  // } else {
-  //   state_.touching = 0;
-  // }
   state_.x = touch.x;
   state_.y = touch.y;
 }

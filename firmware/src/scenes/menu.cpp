@@ -6,7 +6,9 @@ static const char *kItems[] = {"PET", "DINO", "PONG", "ABOUT"};
 void Menu::begin() {
   dialAccumulator_ = 0;
   selected_ = 0;
+  lastSelected_ = selected_;
   redraw_ = true;
+  popActive_ = false;
 
   M5Dial.Display.setTextSize(2);
   M5Dial.Display.setTextDatum(middle_left);
@@ -23,7 +25,12 @@ void Menu::moveSelection(std::int32_t delta) {
   if (selected_ >= kItemCount) {
     selected_ = 0;
   }
-  redraw_ = true;
+  if (selected_ != lastSelected_) {
+    lastSelected_ = selected_;
+    triggerPop();
+  } else {
+    redraw_ = true;
+  }
 }
 
 void Menu::activateSelected() {
@@ -76,6 +83,9 @@ void Menu::update(const Input::InputState &in) {
     if (hit >= 0 && hit < kItemCount) {
       if (hit != selected_) {
         selected_ = hit;
+        lastSelected_ = selected_;
+        triggerPop();
+      } else {
         redraw_ = true;
       }
       activateSelected();
@@ -84,7 +94,9 @@ void Menu::update(const Input::InputState &in) {
 }
 
 void Menu::draw() {
-  if (!redraw_) {
+  std::uint32_t now = millis();
+  bool popStillRunning = popActive_ && (now - popStartMs_ < kPopDurationMs);
+  if (!redraw_ && !popStillRunning) {
     return;
   }
   redraw_ = false;
@@ -100,24 +112,96 @@ void Menu::draw() {
   for (int i = 0; i < kItemCount; i++) {
     int y = startY + i * stepY;
     if (i == selected_) {
-      display.fillRoundRect(35, y - 16, 75, 30, 8);
+      display.fillRoundRect(30, y - 16, 70, 30, 7);
       display.setTextColor(TFT_BLACK);
     } else {
       display.setTextColor(TFT_WHITE);
     }
-    display.drawString(kItems[i], 50, y);
+    display.drawString(kItems[i], 43, y);
   }
+  drawPreview();
   display.setTextColor(TFT_WHITE);
   display.setTextSize(1);
-  display.drawString("BUTTON = SELECT", 70, 205);
-  display.drawString("DIAL = MOVE", 80, 220);
+  display.drawString("BUTTON = SELECT", 80, 205);
+  display.drawString("DIAL = MOVE", 92, 220);
   /*
-   * // DEBUG
-   */
+   * // DEBUG STARTS - it will collapse with the menu preview
   const auto &in = Input::state();
   display.setTextColor(TFT_RED);
   display.drawString("pos: " + String(in.dialPosition), 120, 130);
   display.drawString("delta: " + String(in.dialDelta), 120, 150);
   display.drawString("ac: " + String(dialAccumulator_), 120, 170);
+  * // DEBUG ENDS
+  */
   display.setTextColor(TFT_WHITE);
+  drawPop();
+  now = millis();
+  popStillRunning = popActive_ && (now - popStartMs_ < kPopDurationMs);
+  if (popStillRunning) {
+    redraw_ = true;
+  } else {
+    popActive_ = false;
+  }
+}
+
+void Menu::triggerPop() {
+  popStartMs_ = millis();
+  popActive_ = true;
+  redraw_ = true;
+}
+
+void Menu::drawPreview() const {
+  auto &display = M5Dial.Display;
+  const int x = 120;
+  int y0 = 70;
+  const int line = 18;
+  display.setTextColor(TFT_WHITE);
+  display.setTextSize(1.2);
+  // display.drawString("PREVIEW", x, y0);
+  switch (selected_) {
+  case 0:
+    y0 = 50;
+    display.drawString("Virtual pet", x, y0 + line);
+    display.setTextSize(1);
+    display.drawString("Feed | Clean | Play", x, y0 + 2 * line);
+    display.setTextSize(1.2);
+    display.drawString("Mood:", x, y0 + 3 * line);
+    display.drawString("soon", x, y0 + 4 * line);
+    break;
+  case 1:
+    y0 = 70;
+    display.drawString("Dino game", x, y0 + line);
+    display.drawString("Press to jump", x, y0 + 2 * line);
+    display.drawString("High score:", x, y0 + 3 * line);
+    display.drawString("--", x, y0 + 4 * line);
+    break;
+  case 2:
+    y0 = 90;
+    display.drawString("Classic pong", x, y0 + line);
+    display.drawString("Spin the dial", x, y0 + 2 * line);
+    display.drawString("1P VS CPU", x, y0 + 3 * line);
+    break;
+  case 3:
+    y0 = 110;
+    display.drawString("Developed by:", x, y0 + line);
+    display.drawString("Jenny DeVito", x, y0 + 2 * line);
+    display.drawString("WorstMakers", x, y0 + 3 * line);
+    break;
+  }
+}
+
+void Menu::drawPop() const {
+  if (!popActive_) {
+    return;
+  }
+  auto &display = M5Dial.Display;
+  std::uint32_t now = millis();
+  std::uint32_t elapsed = now - popStartMs_;
+  if (elapsed >= kPopDurationMs) {
+    return;
+  }
+  float t = (float)elapsed / (float)kPopDurationMs;
+  int r = 8 + (int)(t * 45);
+  display.drawCircle(120, 120, r);
+  display.drawCircle(120, 120, r - 1);
 }
