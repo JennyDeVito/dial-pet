@@ -3,8 +3,10 @@
 #include "../scenes/Menu.h"
 #include "../scenes/Pet.h"
 #include "../scenes/Pong.h"
+#include "GameState.h"
 #include "Input.h"
 #include "Scene.h"
+#include "TimeService.h"
 #include <M5Dial.h>
 
 namespace App {
@@ -41,11 +43,19 @@ void requestScene(SceneId id) {
 
 void begin() {
   Input::begin();
+  GameState::begin(millis());
+
+  TimeService::begin();
+
   current_ = sceneFromId(SceneId::Menu);
   current_->begin();
 }
 
 void loop() {
+  TimeService::update();
+
+  GameState::tick(millis());
+
   const auto &in = Input::state();
   if (hasRequest_) {
     hasRequest_ = false;
