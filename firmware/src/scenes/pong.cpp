@@ -155,5 +155,5 @@ void Pong::draw() {
   d.fillRect((int)ballX_, (int)ballY_, kBallSize, kBallSize, TFT_CYAN);
 
   d.setTextSize(1);
-  d.drawString("M5 x2 = QUIT", 45, 205);
+  d.drawString("M5 x2 = QUIT", 92, 220);
 }
