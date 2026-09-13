@@ -1,0 +1,19 @@
+{
+	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"command": "test -f firmware/include/Secrets.h || cp firmware/include/Secrets.h.example firmware/include/Secrets.h",
+						"type": "command"
+					}
+				],
+				"matcher": "startup"
+			}
+		]
+	},
+	"permissions": {
+		"ask": ["Bash(pio run -t upload*)", "Bash(pio run -t clean*)"],
+		"defaultMode": "acceptEdits"
+	}
+}

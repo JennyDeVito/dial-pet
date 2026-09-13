@@ -5,7 +5,7 @@ Dial Pet is a tamagochi developed for a M5-Stack M5-Dial ESP32-S3 Stamp Controll
 ## Goal
 
 The goal was to test the functionalities, to train programming skills and to develop a
-MVP in 4-days work: starting jan 8 and ending by jan 11.
+MVP.
 
 ## The project
 
@@ -13,6 +13,12 @@ Dial Pet will function as a tamagochi, having 3 0-to-100 status: hunger, energy 
 Those status will decay over time. The user can perform two actions: eat and play.
 Eating restores hunger and consumes energy and playing improves happiness consumes energy and
 will be possible to play two games: Dino Game and tenis.
+
+## Setup
+
+`include/Secrets.h` holds WiFi credentials (`WIFI_SSID`/`WIFI_PASS`) and is gitignored
+since this is a public repo. `include/Secrets.h.example` is a committed template - copy
+it to `include/Secrets.h` and fill in your own credentials before building.
 
 ## License and credits
 
@@ -22,26 +28,28 @@ This project is licenced under _Apache License 2.0_ - read the file [LICENSE](./
 
 Under this license you can:
 
--   use the code
--   modify it
--   redistribute it
--   use it commercial projects
+- use the code
+- modify it
+- redistribute it
+- use it commercial projects
 
 ### This license requires you to
 
 When using or redistributing this code, you must:
 
--   keep the copyright and the Apache 2.0 notices
--   point out relevant modifications you made to the code
--   keep the [NOTICE](./NOTICE) file
+- keep the copyright and the Apache 2.0 notices
+- point out relevant modifications you made to the code
+- keep the [NOTICE](./NOTICE) file
 
 ### Credits
 
 When using this project - specially in something public - give proper credit (this isn't demand beyond the Apache 2.0 license)
 
--   **Project:** dial-pet
--   **Author:** Jenny DeVito
--   **License:** Apache 2.0
+- **Project:** dial-pet
+- **Author:** Jenny DeVito
+- **License:** Apache 2.0
+
+This project is developed with AI assistance (Claude Code).
 
 ---
 
