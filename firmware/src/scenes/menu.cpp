@@ -197,8 +197,9 @@ void Menu::drawPreview() const {
     display.setTextSize(1);
     display.drawString("Feed | Clean | Play", x, y0 + 2 * line);
     display.setTextSize(1.2);
-    display.drawString("Hunger:" + String(pet.hunger), x, y0 + 3 * line);
-    display.drawString("Sleep:" + String(pet.sleepiness), x, y0 + 4 * line);
+    display.drawString("Happiness:" + String(pet.happiness), x, y0 + 3 * line);
+    display.drawString("Hunger:" + String(pet.hunger), x, y0 + 4 * line);
+    display.drawString("Sleep:" + String(pet.sleepiness), x, y0 + 5 * line);
   } break;
 
   case 1: {

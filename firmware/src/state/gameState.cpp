@@ -3,10 +3,12 @@
 namespace GameState {
 static PetState pet_;
 static std::uint32_t lastMs_ = 0;
-static std::uint32_t hungerAccumulatorMs_ = 0; // acc to not depend on loop rate
-static std::uint32_t sleepAccumulatorMs_ = 0;  // acc to not depend on loop rate
-static constexpr std::uint32_t kHungerStepMs = 12000; // +1 every 12"
-static constexpr std::uint32_t kSleepStepMs = 18000;  // +1 every 18"
+static std::uint32_t hungerAccumulatorMs_ = 0;    // acc to not depend on loop rate
+static std::uint32_t sleepAccumulatorMs_ = 0;     // acc to not depend on loop rate
+static std::uint32_t happinessAccumulatorMs_ = 0; // acc to not depend on loop rate
+static constexpr std::uint32_t kHungerStepMs = 12000;    // +1 every 12"
+static constexpr std::uint32_t kSleepStepMs = 18000;     // +1 every 18"
+static constexpr std::uint32_t kHappinessStepMs = 15000; // -1 every 15"
 
 static std::uint8_t clamp100(int v) {
   if (v < 0) {
@@ -19,10 +21,11 @@ static std::uint8_t clamp100(int v) {
 }
 
 void begin(std::uint32_t nowMs) {
-  pet_ = {50, 50}; // start in the middle
+  pet_ = {50, 50, 50}; // start in the middle
   lastMs_ = nowMs;
   hungerAccumulatorMs_ = 0;
   sleepAccumulatorMs_ = 0;
+  happinessAccumulatorMs_ = 0;
 }
 
 const PetState &pet() { return pet_; }
@@ -34,15 +37,42 @@ void tick(std::uint32_t nowMs) {
   }
   std::uint32_t deltaTime = nowMs - lastMs_;
   lastMs_ = nowMs;
+
   hungerAccumulatorMs_ += deltaTime;
   while (hungerAccumulatorMs_ >= kHungerStepMs) {
     hungerAccumulatorMs_ -= kHungerStepMs;
     pet_.hunger = clamp100(pet_.hunger + 1);
   }
+
   sleepAccumulatorMs_ += deltaTime;
   while (sleepAccumulatorMs_ >= kSleepStepMs) {
     sleepAccumulatorMs_ -= kSleepStepMs;
     pet_.sleepiness = clamp100(pet_.sleepiness + 1);
   }
+
+  happinessAccumulatorMs_ += deltaTime;
+  while (happinessAccumulatorMs_ >= kHappinessStepMs) {
+    happinessAccumulatorMs_ -= kHappinessStepMs;
+    pet_.happiness = clamp100(pet_.happiness - 1);
+  }
+}
+
+void feed(std::uint8_t hungerAmount, std::uint8_t happinessAmount) {
+  pet_.hunger = clamp100((int)pet_.hunger - (int)hungerAmount);
+  pet_.happiness = clamp100((int)pet_.happiness + (int)happinessAmount);
+}
+
+void rest(std::uint8_t amount) {
+  pet_.sleepiness = clamp100((int)pet_.sleepiness - (int)amount);
+}
+
+void play(std::uint8_t amount) {
+  pet_.sleepiness = clamp100((int)pet_.sleepiness + (int)amount);
+  pet_.hunger = clamp100((int)pet_.hunger + (int)(amount / 2));
+  pet_.happiness = clamp100((int)pet_.happiness + (int)amount);
+}
+
+void adjustHappiness(int delta) {
+  pet_.happiness = clamp100((int)pet_.happiness + delta);
 }
 } // namespace GameState
