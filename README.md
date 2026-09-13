@@ -9,15 +9,15 @@ MVP.
 
 ## The project
 
-Dial Pet will function as a tamagochi, having 3 0-to-100 status: hunger, energy and happiness.
-Those status will decay over time. The user can perform two actions: eat and play.
-Eating restores hunger and consumes energy and playing improves happiness consumes energy and
-will be possible to play two games: Dino Game and tenis.
+Dial Pet will function as a tamagochi, having 3 0-to-100 status: hunger, sleep and happiness.
+Those status will decay over time. User can perform three actions: eat, sleep, and play.
+Eating restores hunger and consumes energy, playing improves happiness consumes energy, and
+will be possible to play two games: Dino Game and Pong.
 
 ## Setup
 
 `include/Secrets.h` holds WiFi credentials (`WIFI_SSID`/`WIFI_PASS`) and is gitignored
-since this is a public repo. `include/Secrets.h.example` is a committed template - copy
+since this is a public repo. `include/Secrets.h.example` is the committed template - copy
 it to `include/Secrets.h` and fill in your own credentials before building.
 
 ## License and credits
